@@ -1,4 +1,4 @@
-use warp::{Filter, filters::query};
+use warp::Filter;
 use tokio_postgres::{NoTls, Error, Client};
 use std::sync::Arc;
 use warp::reject::custom;
