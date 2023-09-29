@@ -30,6 +30,12 @@ async fn main() -> Result<(), Error> {
     let db = warp::any().map(move || client.clone());
 
 
+    let cors = warp::cors()
+    .allow_any_origin() // Permitir qualquer origem (modificar conforme necessário)
+    .allow_methods(vec!["GET", "POST", "DELETE"]) // Métodos permitidos
+    .allow_headers(vec!["Content-Type"]) // Cabeçalhos permitidos
+    .max_age(3600); // Tempo máximo de cache para as opções pré-voo
+
     let create_item = warp::post()
     .and(warp::path("items"))
     .and(warp::body::json())
@@ -92,7 +98,7 @@ async fn main() -> Result<(), Error> {
 
     });
 
-    let routes = create_item.or(get_items).or(delete_item);
+    let routes = create_item.or(get_items).or(delete_item).with(cors);
 
     warp::serve(routes)
     .run(([127, 0, 0, 1], 3030))
